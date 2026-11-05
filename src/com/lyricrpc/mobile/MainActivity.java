@@ -68,10 +68,18 @@ public final class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crash.showPending(this);
         prefs = new Prefs(this);
         source = new MediaSource(this);
         accent = Theme.accent(this, prefs);
-        setContentView(build());
+        try {
+            setContentView(build());
+        } catch (RuntimeException brokenScreen) {
+            // Whatever it was, the screen that shows the stack trace is the one screen that must not throw.
+            Crash.record(this, brokenScreen);
+            setContentView(Crash.fallback(this, brokenScreen));
+            return;
+        }
         askForNotificationsOnce();
     }
 
@@ -360,6 +368,7 @@ public final class MainActivity extends Activity {
     }
 
     private void drawState() {
+        if (statusLine == null) return;
         LyricEngine.State state = engineState();
         Track track = state == null ? null : state.track;
 

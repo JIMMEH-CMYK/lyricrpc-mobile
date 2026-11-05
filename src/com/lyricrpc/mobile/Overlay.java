@@ -50,6 +50,9 @@ public final class Overlay {
             return;
         }
         ensure(prefs);
+        // ensure() drops the window when the permission is revoked between the check and the call, and a
+        // service that dies over a floating label would take the notification down with it.
+        if (view == null) return;
         String text = TextUtils.isEmpty(state.text) ? placeholder(state) : state.text;
         if (!text.equals(view.getText())) view.setText(text);
         view.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);

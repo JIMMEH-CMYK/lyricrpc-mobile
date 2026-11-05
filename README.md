@@ -9,13 +9,14 @@ lyric APIs. It plays no audio, logs into nothing, stores no account anywhere, an
 no Discord token.
 
 **Status.** The lyric core is verified: 84 headless checks pass and five of the six sources return
-the same line for a real song near the same timestamp. The Android layer compiles, packages and
-signs cleanly, but it has not yet been run on a device, so treat the first install as the real test.
+the same line for a real song near the same timestamp. The Android layer is first-run hardware, so if
+it ever dies on you it now reports itself: the stack trace goes into a notification, a dialog on the
+next launch, and `Android/data/com.lyricrpc.mobile/files/crash-report.txt`.
 
 ## Install
 
 Requires Android 8.0 (API 26) or newer. A debug-signed build is committed as
-`LyricRPC-1.1.0.apk`; rebuild it yourself if you would rather not trust a binary.
+`LyricRPC-1.1.1.apk`; rebuild it yourself if you would rather not trust a binary.
 
 1. Copy the APK to the phone and open it. Allow "install unknown apps" for that browser or file app.
 2. Open the app and tap **Notification access**, then enable LyricRPC. This is what lets the app see
