@@ -39,7 +39,6 @@ import java.util.Locale;
  * timing nudge. Built in code, because a Gradle-free APK is easier to keep honest without layout XML.
  */
 public final class MainActivity extends Activity {
-    private static final String GREEN = "#1DB954";
     private static final int REQUEST_NOTIFICATIONS = 71;
     private static final int OVERLAY_MIN_SP = 11;
     private static final int OVERLAY_MAX_SP = 34;
@@ -48,11 +47,12 @@ public final class MainActivity extends Activity {
     private final Handler main = new Handler(Looper.getMainLooper());
     private Prefs prefs;
     private MediaSource source;
+    /** Resolved once per build: the phone's accent on Android 12 and later, the brand green otherwise. */
+    private int accent;
 
     private TextView statusLine;
     private TextView accessLine;
     private Button startStop;
-    private Switch overlaySwitch;
     private LinearLayout decorationBox;
     private TextView preview;
     private TextView offsetLabel;
@@ -70,8 +70,19 @@ public final class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         prefs = new Prefs(this);
         source = new MediaSource(this);
+        accent = Theme.accent(this, prefs);
         setContentView(build());
         askForNotificationsOnce();
+    }
+
+    /**
+     * Colours are baked into the views at build time, so changing the accent means building them again.
+     * A settings screen losing its scroll position for one tap is the cheaper half of that trade.
+     */
+    private void rebuild() {
+        main.removeCallbacks(refresh);
+        setContentView(build());
+        drawState();
     }
 
     @Override
@@ -105,7 +116,7 @@ public final class MainActivity extends Activity {
                 toggleService();
             }
         });
-        startStop.setBackgroundColor(Color.parseColor(GREEN));
+        startStop.setBackgroundColor(accent);
         startStop.setTextColor(Color.WHITE);
         root.addView(startStop);
 
@@ -136,19 +147,14 @@ public final class MainActivity extends Activity {
         preview.setTextColor(Color.WHITE);
         root.addView(preview);
 
-        overlaySwitch = new Switch(this);
-        overlaySwitch.setText("Floating lyric on screen");
-        overlaySwitch.setChecked(prefs.overlay());
-        overlaySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton button, boolean checked) {
-                prefs.setOverlay(checked);
-                if (checked && !Overlay.canDraw(MainActivity.this))
+        root.addView(toggle("Floating lyric on screen", prefs.overlay(), new Toggle() {
+            public void set(boolean on) {
+                prefs.setOverlay(on);
+                if (on && !Overlay.canDraw(MainActivity.this))
                     toast("Allow \"draw over other apps\" for the floating lyric");
                 service(LyricService.ACTION_RESTYLE);
             }
-        });
-        root.addView(overlaySwitch);
+        }));
 
         LinearLayout sizeRow = new LinearLayout(this);
         sizeRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -167,6 +173,27 @@ public final class MainActivity extends Activity {
         });
         sizeRow.addView(size);
         root.addView(sizeRow);
+
+        root.addView(section("Theme"));
+        root.addView(toggle("Use the phone's accent colour", prefs.deviceAccent(), new Toggle() {
+            public void set(boolean on) {
+                prefs.setDeviceAccent(on);
+                accent = Theme.accent(MainActivity.this, prefs);
+                rebuild();
+            }
+        }));
+        root.addView(toggle("True-black overlay for OLED screens", prefs.overlayBlack(), new Toggle() {
+            public void set(boolean on) {
+                prefs.setOverlayBlack(on);
+                service(LyricService.ACTION_RESTYLE);
+            }
+        }));
+        root.addView(toggle("Album art in the notification", prefs.artwork(), new Toggle() {
+            public void set(boolean on) {
+                prefs.setArtwork(on);
+                service(LyricService.ACTION_RESTYLE);
+            }
+        }));
 
         root.addView(section("Timing"));
         offsetLabel = text(14, false);
@@ -256,7 +283,7 @@ public final class MainActivity extends Activity {
                 chip.setTextSize(9f);
                 chip.setPadding(6, 4, 6, 4);
                 chip.setSingleLine(true);
-                chip.setBackgroundColor(value.equals(chosen) ? Color.parseColor(GREEN) : 0xFFEFEFEF);
+                chip.setBackgroundColor(value.equals(chosen) ? accent : 0xFFEFEFEF);
                 chip.setTextColor(value.equals(chosen) ? Color.WHITE : 0xFF303030);
                 row.addView(chip, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
             }
@@ -418,7 +445,7 @@ public final class MainActivity extends Activity {
     private TextView section(String title) {
         TextView view = text(12, true);
         view.setText(title.toUpperCase(Locale.ROOT));
-        view.setTextColor(Color.parseColor(GREEN));
+        view.setTextColor(accent);
         view.setPadding(0, 40, 0, 8);
         return view;
     }
@@ -428,6 +455,24 @@ public final class MainActivity extends Activity {
         view.setText(label);
         view.setAllCaps(false);
         view.setOnClickListener(new Click(onClick));
+        return view;
+    }
+
+    /** What a settings switch does when the user moves it. */
+    private interface Toggle {
+        void set(boolean on);
+    }
+
+    private Switch toggle(String label, boolean checked, final Toggle onChange) {
+        Switch view = new Switch(this);
+        view.setText(label);
+        view.setChecked(checked);
+        view.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton button, boolean value) {
+                onChange.set(value);
+            }
+        });
         return view;
     }
 

@@ -30,6 +30,9 @@ public final class Prefs {
     private static final String KEY_OVERLAY = "overlay";
     private static final String KEY_OVERLAY_TEXT_SP = "overlayTextSp";
     private static final String KEY_OVERLAY_ALPHA = "overlayAlpha";
+    private static final String KEY_OVERLAY_BLACK = "overlayBlack";
+    private static final String KEY_DEVICE_ACCENT = "deviceAccent";
+    private static final String KEY_ARTWORK = "artwork";
 
     private final SharedPreferences store;
 
@@ -156,6 +159,33 @@ public final class Prefs {
 
     public void setOverlayAlpha(float value) {
         store.edit().putFloat(KEY_OVERLAY_ALPHA, Math.max(0.25f, Math.min(1f, value))).apply();
+    }
+
+    /** True-black instead of translucent: an OLED screen switches those pixels off entirely. */
+    public boolean overlayBlack() {
+        return store.getBoolean(KEY_OVERLAY_BLACK, false);
+    }
+
+    public void setOverlayBlack(boolean value) {
+        store.edit().putBoolean(KEY_OVERLAY_BLACK, value).apply();
+    }
+
+    /** Follow the phone's own accent colour rather than the built-in green. */
+    public boolean deviceAccent() {
+        return store.getBoolean(KEY_DEVICE_ACCENT, true);
+    }
+
+    public void setDeviceAccent(boolean value) {
+        store.edit().putBoolean(KEY_DEVICE_ACCENT, value).apply();
+    }
+
+    /** The album art in the notification, which some users find noisy on a small shade. */
+    public boolean artwork() {
+        return store.getBoolean(KEY_ARTWORK, true);
+    }
+
+    public void setArtwork(boolean value) {
+        store.edit().putBoolean(KEY_ARTWORK, value).apply();
     }
 
     /** The single object the core works with, rebuilt whenever a setting changes. */

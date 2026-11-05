@@ -26,6 +26,9 @@ import java.util.List;
 public final class MediaSource {
     public static final String SPOTIFY = "com.spotify.music";
 
+    /** A notification tile never needs more than this, and a shade does not need a full-size cover. */
+    private static final int ART_SIDE = 320;
+
     /** Ordered by "the app whose lyric the user most likely means", with the others as fallbacks. */
     private static final String[] PREFERRED = {
             SPOTIFY,
@@ -77,6 +80,28 @@ public final class MediaSource {
             }
         }
         return best == null ? null : toTrack(best);
+    }
+
+    /**
+     * The artwork of the session that {@link #read()} picked, or null when the player publishes none.
+     * Called once per song rather than per poll: the bitmap is only ever meant for the notification.
+     */
+    public android.graphics.Bitmap artwork(String packageName) {
+        if (TextUtils.isEmpty(packageName)) return null;
+        for (MediaController controller : activeSessions()) {
+            if (!packageName.equals(controller.getPackageName())) continue;
+            return artworkOf(controller.getMetadata());
+        }
+        return null;
+    }
+
+    private static android.graphics.Bitmap artworkOf(android.media.MediaMetadata metadata) {
+        if (metadata == null) return null;
+        android.graphics.Bitmap art = metadata.getBitmap(android.media.MediaMetadata.METADATA_KEY_ALBUM_ART);
+        if (art == null) art = metadata.getBitmap(android.media.MediaMetadata.METADATA_KEY_ART);
+        if (art == null || art.getWidth() <= 0 || art.getHeight() <= 0) return null;
+        // A 2000x2000 cover would be a heap spike inside a service that is meant to be invisible.
+        return android.media.ThumbnailUtils.extractThumbnail(art, ART_SIDE, ART_SIDE);
     }
 
     private static int rank(String packageName, boolean playing) {

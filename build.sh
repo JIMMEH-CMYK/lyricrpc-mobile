@@ -18,6 +18,10 @@ cd "$(dirname "$0")"
 WIN_PROJECT="$(pwd -W)"
 BUILD="$WIN_PROJECT/build"
 
+# One place to bump: the manifest falls back to these when it is linked.
+VERSION_CODE=2
+VERSION_NAME=1.1.0
+
 say() { echo "==> $*"; }
 
 say "clean"
@@ -35,8 +39,8 @@ say "aapt2 link"
   --java "$BUILD/gen" \
   --min-sdk-version 26 \
   --target-sdk-version 34 \
-  --version-code 1 \
-  --version-name 1.0.0 \
+  --version-code "$VERSION_CODE" \
+  --version-name "$VERSION_NAME" \
   "$BUILD/res.zip"
 
 say "javac"
@@ -80,7 +84,7 @@ if [ ! -f "$KEYSTORE" ]; then
     -dname "CN=LyricRPC debug key, O=LyricRPC, C=US" \
     -storepass android -keypass android >/dev/null
 fi
-OUT="$WIN_PROJECT/LyricRPC-1.0.0.apk"
+OUT="$WIN_PROJECT/LyricRPC-$VERSION_NAME.apk"
 rm -f "$OUT"
 "$JAVA" -cp "$BUILD_TOOLS/lib/apksigner.jar" com.android.apksigner.ApkSignerTool sign \
   --ks "$KEYSTORE" --ks-pass pass:android --key-pass pass:android \

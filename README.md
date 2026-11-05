@@ -1,7 +1,8 @@
 # LyricRPC Mobile
 
 Synced lyrics for the music already playing on your phone: a floating line on screen, a live
-notification, and one-tap copy so you can paste the current line into Discord's mobile status.
+notification with the album art and a playback bar, and one-tap copy so you can paste the current
+line into Discord's mobile status.
 
 It reads Spotify's playback off Android's media session and resolves the lyric from community
 lyric APIs. It plays no audio, logs into nothing, stores no account anywhere, and needs no root and
@@ -14,7 +15,7 @@ signs cleanly, but it has not yet been run on a device, so treat the first insta
 ## Install
 
 Requires Android 8.0 (API 26) or newer. A debug-signed build is committed as
-`LyricRPC-1.0.0.apk`; rebuild it yourself if you would rather not trust a binary.
+`LyricRPC-1.1.0.apk`; rebuild it yourself if you would rather not trust a binary.
 
 1. Copy the APK to the phone and open it. Allow "install unknown apps" for that browser or file app.
 2. Open the app and tap **Notification access**, then enable LyricRPC. This is what lets the app see
@@ -87,3 +88,8 @@ java -cp outcore com.lyricrpc.mobile.core.CoreTest --offline   # no network
 MIT licensed (see `LICENSE`). Lyrics come from the community databases above and remain whatever
 they are licensed as upstream; this project stores nothing and redistributes no lyric file. Not
 affiliated with Spotify, Discord, or the owners of those services.
+
+The notification artwork, the playback bar, the dynamic accent colour and the true-black overlay
+follow ideas from [Kizzey](https://codeberg.org/UnpackedX/Kizzey). No code from it is used: Kizzey
+is GPL-3.0 and this repository is MIT, and the part of Kizzey that writes a Discord status runs on
+the account's token through the gateway, which this app deliberately does not do.

@@ -21,6 +21,7 @@ import android.widget.TextView;
 public final class Overlay {
     private final Context context;
     private final WindowManager windows;
+    private final Prefs prefs;
 
     private TextView view;
     private WindowManager.LayoutParams params;
@@ -35,6 +36,7 @@ public final class Overlay {
     Overlay(Context context) {
         this.context = context.getApplicationContext();
         this.windows = (WindowManager) this.context.getSystemService(Context.WINDOW_SERVICE);
+        this.prefs = new Prefs(this.context);
     }
 
     /** The permission the user has to grant in settings; the app cannot do it for them. */
@@ -79,7 +81,7 @@ public final class Overlay {
         TextView label = new TextView(context);
         label.setGravity(Gravity.CENTER);
         label.setPadding(28, 16, 28, 16);
-        label.setBackgroundColor(0xB0000000);
+        label.setBackgroundColor(Theme.surface(prefs));
         label.setTextColor(Color.WHITE);
         label.setMaxWidth(1400);
 
@@ -141,7 +143,9 @@ public final class Overlay {
 
     private void style(Prefs prefs) {
         view.setTextSize(prefs.overlayTextSp());
-        view.setAlpha(prefs.overlayAlpha());
+        // True black is only true black at full opacity; any alpha would blend the pixels back up.
+        view.setAlpha(prefs.overlayBlack() ? 1f : prefs.overlayAlpha());
+        view.setBackgroundColor(Theme.surface(prefs));
     }
 
     private void copy(String text) {
@@ -154,11 +158,11 @@ public final class Overlay {
 
     /** The line visibly reacts, which is the only feedback a focusless window can give. */
     private void flash(final TextView label) {
-        label.setBackgroundColor(0xD01DB954);
+        label.setBackgroundColor(Theme.flash(Theme.accent(context, prefs)));
         label.postDelayed(new Runnable() {
             @Override
             public void run() {
-                label.setBackgroundColor(0xB0000000);
+                label.setBackgroundColor(Theme.surface(prefs));
             }
         }, 260);
     }

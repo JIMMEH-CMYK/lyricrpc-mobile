@@ -9,7 +9,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -78,7 +77,7 @@ public final class LyricService extends Service {
         running = true;
         // The service has to be foreground within seconds of starting, so it announces itself first and
         // fills in the lyric as soon as the engine has one.
-        startForeground(NOTIFICATION_ID, build("LyricRPC", "waiting for a track...", ""));
+        startForeground(NOTIFICATION_ID, build("LyricRPC", "waiting for a track...", null));
         engine.start(new LyricEngine.Listener() {
             @Override
             public void onUpdate(final LyricEngine.State state) {
@@ -151,7 +150,7 @@ public final class LyricService extends Service {
         if (signature.equals(lastNotified) || now - lastNotifiedAt < NOTIFY_MIN_MS) return;
         lastNotified = signature;
         lastNotifiedAt = now;
-        notify(build(title, body, state.upcoming));
+        notify(build(title, body, state));
     }
 
     private static String header(Track track) {
@@ -164,25 +163,39 @@ public final class LyricService extends Service {
         if (manager != null) manager.notify(NOTIFICATION_ID, notification);
     }
 
-    private Notification build(String title, String body, String upcoming) {
+    private Notification build(String title, String body, LyricEngine.State state) {
+        String upcoming = state == null ? "" : state.upcoming;
         Notification.Builder builder = new Notification.Builder(this, CHANNEL)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setSmallIcon(R.drawable.ic_lyric)
                 .setOngoing(true)
                 .setContentIntent(tap(ACTION_START))
-                .setColor(Color.parseColor("#1DB954"));
+                .setColor(Theme.accent(this, prefs));
 
         // The expanded view carries the next lines, so the user can read ahead without opening anything.
         Notification.BigTextStyle style = new Notification.BigTextStyle();
         style.bigText(TextUtils.isEmpty(upcoming) ? body : body + "\n\n" + upcoming);
         builder.setStyle(style);
 
+        if (state != null) {
+            if (prefs.artwork() && state.art != null) builder.setLargeIcon(state.art);
+            int percent = percent(state.track);
+            if (percent >= 0) builder.setProgress(100, percent, false);
+        }
+
         builder.addAction(action("Copy", ACTION_COPY, null));
         builder.addAction(action("-50ms", ACTION_OFFSET, -50L));
         builder.addAction(action("+50ms", ACTION_OFFSET, 50L));
         builder.addAction(action("Style", ACTION_DECORATION, null));
         return builder.build();
+    }
+
+    /** The bar is decoration, not a control, so a coarse percentage is enough - and -1 means no bar. */
+    private static int percent(Track track) {
+        if (track == null || track.durationMs <= 0) return -1;
+        long done = Math.max(0, Math.min(track.durationMs, track.progressMs));
+        return (int) (done * 100 / track.durationMs);
     }
 
     private Notification.Action action(String label, String action, Long extra) {

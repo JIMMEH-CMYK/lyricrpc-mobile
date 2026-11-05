@@ -47,6 +47,8 @@ public final class LyricEngine {
         public String upcoming = "";
         public String status = "";
         public boolean searching;
+        /** The cover of the current song, already downscaled, or null. Only the notification uses it. */
+        public android.graphics.Bitmap art;
 
         public boolean isPlaying() {
             return track != null && track.playing;
@@ -61,6 +63,7 @@ public final class LyricEngine {
             out.upcoming = upcoming;
             out.status = status;
             out.searching = searching;
+            out.art = art;
             return out;
         }
     }
@@ -132,6 +135,9 @@ public final class LyricEngine {
         if (target != null) target.post(new Runnable() {
             @Override
             public void run() {
+                // Artwork is only taken once per song, so switching it back on mid-song asks for it now.
+                if (state.art == null && prefs.artwork() && state.track != null)
+                    state.art = source.artwork(state.track.packageName);
                 publish();
             }
         });
@@ -153,6 +159,7 @@ public final class LyricEngine {
         if (track == null) {
             state.track = null;
             state.lyrics = null;
+            state.art = null;
             state.status = "";
             requestKey = null;
             return;
@@ -169,6 +176,7 @@ public final class LyricEngine {
     private void request(final Track track) {
         final String key = track.songId();
         requestKey = key;
+        state.art = prefs.artwork() ? source.artwork(track.packageName) : null;
 
         Lyrics.Result cached = cache.get(key);
         if (cached != null) {
