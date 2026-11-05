@@ -40,6 +40,8 @@ public final class Crash {
     private static final int NOTIFY_MAX_CHARS = 2500;
 
     private static volatile boolean installed;
+    /** Once per process: a crash inside the crash screen must not recurse into itself. */
+    private static volatile boolean screenRequested;
 
     private Crash() {
     }
@@ -55,6 +57,7 @@ public final class Crash {
             public void uncaughtException(Thread thread, Throwable error) {
                 try {
                     record(app, thread, error);
+                    launchScreen(app);
                 } catch (Throwable loggingFailed) {
                     // A crash logger must never become the crash it is reporting.
                 }
@@ -161,6 +164,22 @@ public final class Crash {
     }
 
     /**
+     * Ask the separate crash process to show the trace. The reporting process is milliseconds from death,
+     * so this is a best effort that costs nothing: the notification and the file already carry the same
+     * text if Android refuses a background launch.
+     */
+    private static void launchScreen(Context context) {
+        if (screenRequested) return;
+        screenRequested = true;
+        try {
+            context.startActivity(new Intent(context, CrashActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        } catch (Exception launchRefused) {
+            // Expected when the crash happened with no window on screen.
+        }
+    }
+
+    /**
      * Shown once, on the next launch, and deleted when dismissed - the phone can be killed mid-crash, so
      * the shade and the file are the only things that outlive the process.
      */
@@ -193,26 +212,27 @@ public final class Crash {
      * without the process having to survive until a later launch.
      */
     public static View fallback(Context context, Throwable error) {
-        final String report = describe(context, Thread.currentThread(), error);
+        return screen(context, "LyricRPC could not open", describe(context, Thread.currentThread(), error));
+    }
 
+    /** The crash screen, shared by {@link CrashActivity} and the settings screen's own failure path. */
+    public static View screen(Context context, String headline, final String report) {
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setPadding(32, 48, 32, 32);
 
-        TextView headline = new TextView(context);
-        headline.setTextSize(18f);
-        headline.setTypeface(Typeface.DEFAULT_BOLD);
-        headline.setText("LyricRPC could not open");
-        root.addView(headline);
+        TextView title = new TextView(context);
+        title.setTextSize(18f);
+        title.setTypeface(Typeface.DEFAULT_BOLD);
+        title.setText(headline);
+        root.addView(title);
 
-        TextView why = new TextView(context);
-        why.setTextSize(13f);
-        why.setText(error == null ? "" : error.getClass().getName()
-                + (error.getMessage() == null ? "" : "\n" + error.getMessage()));
-        root.addView(why);
+        TextView hint = new TextView(context);
+        hint.setTextSize(13f);
+        hint.setText("Tap Copy and send it to whoever is fixing the app.");
+        root.addView(hint);
 
-        ScrollView box = scroll(context, report);
-        root.addView(box, new LinearLayout.LayoutParams(
+        root.addView(scroll(context, report), new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
 
         Button copy = new Button(context);

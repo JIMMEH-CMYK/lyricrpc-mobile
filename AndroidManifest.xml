@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lyricrpc.mobile"
-    android:versionCode="3"
-    android:versionName="1.1.1">
+    android:versionCode="4"
+    android:versionName="1.1.2">
 
     <uses-sdk
         android:minSdkVersion="26"
@@ -34,6 +34,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--
+            Its own process, so the crash screen is not killed along with the app that crashed and tried
+            to open it.
+        -->
+        <activity
+            android:name=".CrashActivity"
+            android:exported="false"
+            android:process=":crash" />
 
         <service
             android:name=".LyricService"

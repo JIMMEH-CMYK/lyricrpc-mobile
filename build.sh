@@ -19,8 +19,8 @@ WIN_PROJECT="$(pwd -W)"
 BUILD="$WIN_PROJECT/build"
 
 # One place to bump: the manifest falls back to these when it is linked.
-VERSION_CODE=3
-VERSION_NAME=1.1.1
+VERSION_CODE=4
+VERSION_NAME=1.1.2
 
 say() { echo "==> $*"; }
 

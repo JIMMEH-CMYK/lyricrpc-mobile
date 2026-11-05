@@ -16,7 +16,7 @@ next launch, and `Android/data/com.lyricrpc.mobile/files/crash-report.txt`.
 ## Install
 
 Requires Android 8.0 (API 26) or newer. A debug-signed build is committed as
-`LyricRPC-1.1.1.apk`; rebuild it yourself if you would rather not trust a binary.
+`LyricRPC-1.1.2.apk`; rebuild it yourself if you would rather not trust a binary.
 
 1. Copy the APK to the phone and open it. Allow "install unknown apps" for that browser or file app.
 2. Open the app and tap **Notification access**, then enable LyricRPC. This is what lets the app see
