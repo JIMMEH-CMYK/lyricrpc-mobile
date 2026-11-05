@@ -1,0 +1,6 @@
+# build.sh must stay LF: bash on Linux and macOS refuses to run a script with CRLF line endings.
+*.sh text eol=lf
+*.java text eol=lf
+*.xml text eol=lf
+*.md text
+*.apk binary

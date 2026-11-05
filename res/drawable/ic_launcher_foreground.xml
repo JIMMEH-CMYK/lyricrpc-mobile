@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The note glyph from ic_lyric, scaled onto the 108dp adaptive grid and kept inside the 66dp safe
+    zone, so launchers that mask the icon to a circle never cut the stem off.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FF1ED760"
+        android:pathData="M46.5,31.5 L66.5,31.5 A5,5 0 0,1 71.5,36.5 L71.5,56.5 L66.5,56.5 L66.5,36.5 L51.5,36.5 L51.5,62.75 A7.5,7.5 0 1,0 56.5,70.25 L56.5,46.5 L61.5,46.5 L61.5,41.5 L46.5,41.5 Z" />
+    <path
+        android:fillColor="#FF1ED760"
+        android:pathData="M31.5,74 L76.5,74 L76.5,79 L31.5,79 Z" />
+</vector>

@@ -1,0 +1,7 @@
+# Build products and the signing key. The keystore is a private key: it must never be committed.
+build/
+out/
+outcore/
+scratch/
+debug.keystore
+*.idsig
