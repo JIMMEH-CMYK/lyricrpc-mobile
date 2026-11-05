@@ -19,14 +19,23 @@ WIN_PROJECT="$(pwd -W)"
 BUILD="$WIN_PROJECT/build"
 
 # One place to bump: the manifest falls back to these when it is linked.
-VERSION_CODE=4
-VERSION_NAME=1.1.2
+VERSION_CODE=5
+VERSION_NAME=1.1.3
 
 say() { echo "==> $*"; }
 
 say "clean"
 rm -rf "$BUILD"
 mkdir -p "$WIN_PROJECT/build/gen" "$WIN_PROJECT/build/classes" "$WIN_PROJECT/build/dex" "$WIN_PROJECT/build/apk"
+
+say "checking for regex the phone cannot compile"
+# Pattern.UNICODE_CHARACTER_CLASS is accepted by the desktop JDK and rejected outright by Android's
+# regex engine, so CoreTest passes right up until the app is on a phone. This is the only check that
+# catches it here. Only the call form matches, so a comment can name the flag in peace.
+if grep -rqE ',[[:space:]]*Pattern\.UNICODE_CHARACTER_CLASS' "$WIN_PROJECT/src"; then
+  echo "src/ compiles a Pattern with UNICODE_CHARACTER_CLASS; Android cannot. Drop the flag." >&2
+  exit 1
+fi
 
 say "aapt2 compile res/"
 "$BUILD_TOOLS/aapt2.exe" compile --dir "$WIN_PROJECT/res" -o "$BUILD/res.zip"

@@ -6,8 +6,13 @@ import java.util.regex.Pattern;
 /** The text helpers the desktop plugin uses, ported so a line looks the same on both. */
 public final class Text {
     private static final Pattern SPACES = Pattern.compile("\\s+");
-    private static final Pattern NOT_WORDY =
-            Pattern.compile("[^\\p{L}\\p{N}]+", Pattern.UNICODE_CHARACTER_CLASS);
+    /**
+     * {@code \p{L}} and {@code \p{N}} are Unicode categories and match accented, CJK and Cyrillic text
+     * without any flag. {@code Pattern.UNICODE_CHARACTER_CLASS} looks like the thing that guarantees that
+     * but only changes {@code \w \d \s \b}, and Android's regex engine refuses to compile with it at all:
+     * the static initializer threw and took the app down on launch. It must not come back.
+     */
+    private static final Pattern NOT_WORDY = Pattern.compile("[^\\p{L}\\p{N}]+");
     private static final Pattern ANNOTATION = Pattern.compile("\\s*\\[[^\\]]+\\]\\s*");
     private static final Pattern INSTRUMENTAL_BRACKET =
             Pattern.compile("\\s*\\([^)]*instrumental[^)]*\\)\\s*", Pattern.CASE_INSENSITIVE);
