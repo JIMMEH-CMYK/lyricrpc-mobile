@@ -5,8 +5,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -116,7 +114,8 @@ public final class LyricService extends Service {
         if (action == null) return;
 
         if (ACTION_COPY.equals(action)) {
-            copy(engine == null ? "" : engine.snapshot().text);
+            // A notification tap is the one route Android allows for the hop into Discord.
+            Handoff.copy(this, engine == null ? "" : engine.snapshot().text, prefs, true, "lyric");
             return;
         }
         if (ACTION_OFFSET.equals(action)) {
@@ -216,12 +215,6 @@ public final class LyricService extends Service {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 ? PendingIntent.FLAG_IMMUTABLE
                 : PendingIntent.FLAG_UPDATE_CURRENT;
-    }
-
-    private void copy(String text) {
-        if (TextUtils.isEmpty(text)) return;
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        if (clipboard != null) clipboard.setPrimaryClip(ClipData.newPlainText("lyric", text));
     }
 
     private void channel() {

@@ -33,6 +33,8 @@ public final class Prefs {
     private static final String KEY_OVERLAY_BLACK = "overlayBlack";
     private static final String KEY_DEVICE_ACCENT = "deviceAccent";
     private static final String KEY_ARTWORK = "artwork";
+    private static final String KEY_OPEN_DISCORD = "openDiscord";
+    private static final String KEY_FIT_STATUS = "fitStatus";
 
     private final SharedPreferences store;
 
@@ -186,6 +188,27 @@ public final class Prefs {
 
     public void setArtwork(boolean value) {
         store.edit().putBoolean(KEY_ARTWORK, value).apply();
+    }
+
+    /**
+     * Jump to Discord once the line is copied. Pasting it into Set Status is still the user's own tap -
+     * Discord gives no other app any way to write a status, and this app does not pretend otherwise.
+     */
+    public boolean openDiscord() {
+        return store.getBoolean(KEY_OPEN_DISCORD, true);
+    }
+
+    public void setOpenDiscord(boolean value) {
+        store.edit().putBoolean(KEY_OPEN_DISCORD, value).apply();
+    }
+
+    /** Trim the copied line to what a Discord custom status can actually hold. */
+    public boolean fitStatus() {
+        return store.getBoolean(KEY_FIT_STATUS, true);
+    }
+
+    public void setFitStatus(boolean value) {
+        store.edit().putBoolean(KEY_FIT_STATUS, value).apply();
     }
 
     /** The single object the core works with, rebuilt whenever a setting changes. */

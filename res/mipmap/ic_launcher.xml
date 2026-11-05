@@ -1,17 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Default-config fallback for the adaptive icon, so @mipmap/ic_launcher resolves everywhere. -->
+<!-- The unmasked fallback: the same plate and note with the corners rounded by hand, for anything that
+     reads @mipmap/ic_launcher without going through the adaptive-icon path. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="48dp"
     android:height="48dp"
-    android:viewportWidth="48"
-    android:viewportHeight="48">
-    <path
-        android:fillColor="#FF121212"
-        android:pathData="M0,0 L48,0 L48,48 L0,48 Z" />
-    <path
-        android:fillColor="#FF1ED760"
-        android:pathData="M19,8 L33,8 A4,4 0 0,1 37,12 L37,27 L33,27 L33,12 L23,12 L23,32.5 A6,6 0 1,0 27,38.5 L27,18 L31,18 L31,15 L19,15 Z" />
-    <path
-        android:fillColor="#FF1ED760"
-        android:pathData="M11,41 L37,41 L37,44 L11,44 Z" />
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path android:pathData="M24,4 L84,4 A20,20 0 0 1 104,24 L104,84 A20,20 0 0 1 84,104 L24,104 A20,20 0 0 1 4,84 L4,24 A20,20 0 0 1 24,4 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="8" android:startY="4"
+                android:endX="100" android:endY="104">
+                <item android:offset="0" android:color="@color/icon_plate_a" />
+                <item android:offset="0.52" android:color="@color/icon_plate_b" />
+                <item android:offset="1" android:color="@color/icon_plate_c" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <group android:pivotX="30" android:pivotY="76" android:rotation="-22" android:scaleY="0.76">
+        <path android:fillColor="@color/icon_note_a" android:pathData="M21,76 A9,9 0 1 0 39,76 A9,9 0 1 0 21,76 Z" />
+    </group>
+    <group android:pivotX="70" android:pivotY="70" android:rotation="-22" android:scaleY="0.76">
+        <path android:fillColor="@color/icon_note_b" android:pathData="M61,70 A9,9 0 1 0 79,70 A9,9 0 1 0 61,70 Z" />
+    </group>
+    <path android:fillColor="@color/icon_note_a" android:pathData="M37,34 L41,34 L41,77 L37,77 Z" />
+    <path android:fillColor="@color/icon_note_b" android:pathData="M77,28 L81,28 L81,71 L77,71 Z" />
+    <path android:fillColor="@color/icon_note_c" android:pathData="M37,34 L81,26 L81,40 L37,48 Z" />
 </vector>

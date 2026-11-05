@@ -22,6 +22,7 @@ public final class CoreTest {
         query();
         decorations();
         presentation();
+        status();
 
         if (!offline) live();
 
@@ -238,9 +239,68 @@ public final class CoreTest {
                 !bolded.contains("Second"), bolded);
     }
 
+    /**
+     * The clipboard trim. Discord counts the way JavaScript does, so the test counts the same way: chars,
+     * with an emoji or a bold letter worth two - and a cut must never leave half a pair behind.
+     */
+    private static void status() {
+        equal("status: a short line is left alone", "Hello there", Presentation.fitTo("Hello there", 128));
+        equal("status: nothing is invented for an empty line", "", Presentation.fitTo("", 128));
+        equal("status: null is not a lyric", "", Presentation.fitTo(null, 128));
+        equal("status: no room is no lyric", "", Presentation.fitTo("a line", 0));
+        equal("status: one unit is only the mark", "…", Presentation.fitTo("a line", 1));
+
+        String exact = repeat('x', 128);
+        equal("status: exactly at the limit survives whole", exact, Presentation.fitTo(exact, 128));
+
+        StringBuilder builder = new StringBuilder();
+        while (builder.length() < 200) builder.append("wordly ");
+        String longLine = builder.toString();
+        String cut = Presentation.fitTo(longLine, 128);
+        check("status: a long line is cut to fit", cut.length() <= 128, "length " + cut.length());
+        check("status: and says it was cut short", cut.endsWith("…"), cut);
+        check("status: cut at a word, never inside one",
+                longLine.startsWith(cut.substring(0, cut.length() - 1) + " "), cut);
+
+        String oneWord = repeat('a', 200);
+        String hard = Presentation.fitTo(oneWord, 128);
+        equal("status: a word too long is still filled to the brim", 128, hard.length());
+        check("status: and the brim is the mark", hard.endsWith("…"), hard);
+
+        String bold = Decorations.bold(longLine);
+        String fittedBold = Presentation.fitTo(bold, 128);
+        check("status: a bold line fits the same box", fittedBold.length() <= 128,
+                "length " + fittedBold.length());
+        check("status: no bold letter is cut in half", !hasLoneSurrogate(fittedBold), fittedBold);
+
+        StringBuilder notes = new StringBuilder();
+        while (notes.length() < 200) notes.append("\uD83C\uDFB5");
+        String fromNotes = Presentation.fitTo(notes.toString(), 128);
+        check("status: an emoji wall fits", fromNotes.length() <= 128, "length " + fromNotes.length());
+        check("status: no emoji is cut in half", !hasLoneSurrogate(fromNotes), fromNotes);
+    }
+
+    private static boolean hasLoneSurrogate(String value) {
+        for (int i = 0; i < value.length(); i++) {
+            char ch = value.charAt(i);
+            if (Character.isHighSurrogate(ch)) {
+                if (i + 1 >= value.length() || !Character.isLowSurrogate(value.charAt(i + 1))) return true;
+                i++;
+            } else if (Character.isLowSurrogate(ch)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String repeat(char ch, int times) {
+        StringBuilder out = new StringBuilder(times);
+        for (int i = 0; i < times; i++) out.append(ch);
+        return out.toString();
+    }
+
     private static void live() {
         Providers providers = new Providers(new Http(9000));
-
         // A song every community source indexes, so a null answer means the code broke, not the catalogue.
         Track song = track("Blinding Lights", "The Weeknd", 200000);
         int withLyrics = 0;

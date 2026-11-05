@@ -9,6 +9,13 @@ import java.util.List;
  * must not eat the glyphs.
  */
 public final class Presentation {
+    /**
+     * Discord's own ceiling for a custom status. The counter in Discord's dialog counts the way JavaScript
+     * does - one per UTF-16 unit - so an emoji and every letter of a bold line eat two of the 128. Fitting
+     * to that same measure is what guarantees the paste is accepted rather than greyed out.
+     */
+    public static final int STATUS_LIMIT = 128;
+
     public static final class Style {
         public String decoration = "none";
         public String prefix = "";
@@ -54,5 +61,24 @@ public final class Presentation {
     /** The desktop does the same collapse: one space between words, nothing at the edges. */
     public static String clean(String value) {
         return Text.clean(value);
+    }
+
+    /**
+     * Shortens a line so a status box that holds {@code maxUnits} UTF-16 units will take it. The cut backs
+     * off to a whole character rather than leaving half of an emoji on the clipboard, prefers the last
+     * space before it, and reserves one unit for the ellipsis so the result is always within the limit.
+     */
+    public static String fitTo(String value, int maxUnits) {
+        if (value == null || value.isEmpty() || maxUnits <= 0) return "";
+        if (value.length() <= maxUnits) return value;
+        if (maxUnits == 1) return "…";
+
+        int room = maxUnits - 1;
+        int cut = room;
+        if (Character.isHighSurrogate(value.charAt(cut - 1)) && Character.isLowSurrogate(value.charAt(cut))) cut--;
+        int space = value.lastIndexOf(' ', cut - 1);
+        // A word boundary only helps when it has not run half way back up the line.
+        int end = space >= room / 2 ? space : cut;
+        return clean(value.substring(0, end)) + "…";
     }
 }

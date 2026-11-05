@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- The status-bar glyph: the same beamed pair as the launcher icon, blown up to fill a 24dp slot and
+     kept a single colour because the shade tints whatever it is given. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-    <!-- A note with a line of text under it: the lyric, not the player. -->
-    <path
-        android:fillColor="#FFFFFFFF"
-        android:pathData="M9,3 L17,3 A2,2 0 0,1 19,5 L19,13 L17,13 L17,5 L11,5 L11,15.5 A3,3 0 1,0 13,18.5 L13,9 L15,9 L15,7 L9,7 Z" />
-    <path
-        android:fillColor="#FFFFFFFF"
-        android:pathData="M3,20 L21,20 L21,22 L3,22 Z" />
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="1.34"
+        android:scaleY="1.34">
+
+        <group android:pivotX="30" android:pivotY="76" android:rotation="-22" android:scaleY="0.76">
+            <path android:fillColor="#FFFFFFFF" android:pathData="M21,76 A9,9 0 1 0 39,76 A9,9 0 1 0 21,76 Z" />
+        </group>
+        <group android:pivotX="70" android:pivotY="70" android:rotation="-22" android:scaleY="0.76">
+            <path android:fillColor="#FFFFFFFF" android:pathData="M61,70 A9,9 0 1 0 79,70 A9,9 0 1 0 61,70 Z" />
+        </group>
+        <path android:fillColor="#FFFFFFFF" android:pathData="M37,34 L41,34 L41,77 L37,77 Z" />
+        <path android:fillColor="#FFFFFFFF" android:pathData="M77,28 L81,28 L81,71 L77,71 Z" />
+        <path android:fillColor="#FFFFFFFF" android:pathData="M37,34 L81,26 L81,40 L37,48 Z" />
+    </group>
 </vector>

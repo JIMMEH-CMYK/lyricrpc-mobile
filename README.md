@@ -8,7 +8,7 @@ It reads Spotify's playback off Android's media session and resolves the lyric f
 lyric APIs. It plays no audio, logs into nothing, stores no account anywhere, and needs no root and
 no Discord token.
 
-**Status.** The lyric core is verified: 84 headless checks pass and five of the six sources return
+**Status.** The lyric core is verified: 99 headless checks pass and five of the six sources return
 the same line for a real song near the same timestamp. The Android layer is first-run hardware, so if
 it ever dies on you it now reports itself: the stack trace goes into a notification, a dialog on the
 next launch, and `Android/data/com.lyricrpc.mobile/files/crash-report.txt`.
@@ -16,7 +16,7 @@ next launch, and `Android/data/com.lyricrpc.mobile/files/crash-report.txt`.
 ## Install
 
 Requires Android 8.0 (API 26) or newer. A debug-signed build is committed as
-`LyricRPC-1.1.3.apk`; rebuild it yourself if you would rather not trust a binary.
+`LyricRPC-1.2.0.apk`; rebuild it yourself if you would rather not trust a binary.
 
 1. Copy the APK to the phone and open it. Allow "install unknown apps" for that browser or file app.
 2. Open the app and tap **Notification access**, then enable LyricRPC. This is what lets the app see
@@ -28,13 +28,25 @@ Requires Android 8.0 (API 26) or newer. A debug-signed build is committed as
 
 ## Using it with Discord on mobile
 
-Discord's phone app exposes no status API to other apps, so the handoff is deliberately manual:
+Discord's phone app exposes no status API to other apps, so the handoff stops at the clipboard: this
+app copies the line and, if you want, brings Discord to the front. What you tap after that is yours.
 
-- Tap the floating lyric, or press **Copy** on the notification, to put the current line on the
-  clipboard.
-- In Discord: your avatar → **Set Status** → paste.
+- **Copy** on the notification copies the line and opens Discord in one tap - a tap that came from the
+  shade is the only place Android permits that hop.
+- Tap the floating lyric to copy it on the spot. It stays copy-only, deliberately: a tap on our own
+  overlay window grants no permission to launch another app, and pretending otherwise would just be a
+  silent no-op on most phones.
+- **Copy line** and **Copy and open** do the same thing from inside the app.
 
-**Copy whole song** puts the full lyric on the clipboard in LRC format.
+A line longer than a status holds is trimmed at a word with an ellipsis so Discord accepts the paste
+instead of grey-ing it out; **Settings → Cut the line to what a status holds** turns that off.
+**Whole song** puts the full lyric on the clipboard in LRC format.
+
+## The screens
+
+Five tabs, each in its own colour: **Now** (permissions, timing, the copy buttons), **Style** (the
+decoration grid, case, bold, karaoke, prefix and suffix, with a live preview), **Overlay** (size,
+opacity, true black), **Sources** and **Settings**.
 
 ## Lyric sources
 

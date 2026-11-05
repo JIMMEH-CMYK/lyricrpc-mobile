@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The same note as a flat silhouette: Android 13 uses this for themed icons, where the launcher
+     paints its own background and wants one colour back. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108"
+    android:tint="#FFFFFFFF">
+
+    <group android:pivotX="30" android:pivotY="76" android:rotation="-22" android:scaleY="0.76">
+        <path android:fillColor="#FFFFFFFF" android:pathData="M21,76 A9,9 0 1 0 39,76 A9,9 0 1 0 21,76 Z" />
+    </group>
+    <group android:pivotX="70" android:pivotY="70" android:rotation="-22" android:scaleY="0.76">
+        <path android:fillColor="#FFFFFFFF" android:pathData="M61,70 A9,9 0 1 0 79,70 A9,9 0 1 0 61,70 Z" />
+    </group>
+    <path android:fillColor="#FFFFFFFF" android:pathData="M37,34 L41,34 L41,77 L37,77 Z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M77,28 L81,28 L81,71 L77,71 Z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M37,34 L81,26 L81,40 L37,48 Z" />
+</vector>

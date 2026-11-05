@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#121212</color>
+    <!-- The launcher plate: violet into teal into green-black, so the icon reads as music and not as a
+         system app. Shared with the UI so the shade, the overlay and the icon are the same palette. -->
+    <color name="icon_plate_a">#FF1B1035</color>
+    <color name="icon_plate_b">#FF0E2A46</color>
+    <color name="icon_plate_c">#FF08332B</color>
+    <color name="icon_glow">#4D1ED760</color>
+    <color name="icon_note_a">#FF1ED760</color>
+    <color name="icon_note_b">#FF4FD8FF</color>
+    <color name="icon_note_c">#FFC974FF</color>
+
+    <!-- The interface palette. Each tab owns one of these, which is what makes the settings screen
+         readable at a glance instead of one long grey column. -->
+    <color name="tab_now">#FF1ED760</color>
+    <color name="tab_style">#FFC974FF</color>
+    <color name="tab_overlay">#FFFF7AB8</color>
+    <color name="tab_sources">#FF4FD8FF</color>
+    <color name="tab_settings">#FFFFB45C</color>
+    <color name="card">#FF1A1725</color>
+    <color name="card_soft">#FF241F33</color>
+    <color name="ink">#FFF3F0FF</color>
+    <color name="ink_dim">#FFB4AECB</color>
+    <color name="danger">#FFFF6B6B</color>
 </resources>

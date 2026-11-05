@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The plate behind the note: a diagonal violet-to-green gradient with a glow where the note sits,
+     so the icon has depth in a launcher full of flat squares. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path android:pathData="M0,0 L108,0 L108,108 L0,108 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="6" android:startY="0"
+                android:endX="102" android:endY="108">
+                <item android:offset="0" android:color="@color/icon_plate_a" />
+                <item android:offset="0.52" android:color="@color/icon_plate_b" />
+                <item android:offset="1" android:color="@color/icon_plate_c" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <path android:pathData="M0,0 L108,0 L108,108 L0,108 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="54" android:centerY="62"
+                android:gradientRadius="54">
+                <item android:offset="0" android:color="@color/icon_glow" />
+                <item android:offset="1" android:color="#001ED760" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

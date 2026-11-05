@@ -120,9 +120,10 @@ public final class Overlay {
                         return true;
                     case MotionEvent.ACTION_UP:
                         // A tap, not a drag: copy the line so the user can paste it into Discord's status.
+                        // No attempt to open Discord from here - this window grants no background launch.
                         if (Math.abs(event.getRawX() - touchedAtX) < 12
                                 && Math.abs(event.getRawY() - touchedAtY) < 12) {
-                            copy(label.getText().toString());
+                            Handoff.copy(context, label.getText().toString(), prefs, false, "lyric");
                             flash(label);
                         }
                         return true;
@@ -149,14 +150,6 @@ public final class Overlay {
         // True black is only true black at full opacity; any alpha would blend the pixels back up.
         view.setAlpha(prefs.overlayBlack() ? 1f : prefs.overlayAlpha());
         view.setBackgroundColor(Theme.surface(prefs));
-    }
-
-    private void copy(String text) {
-        if (TextUtils.isEmpty(text)) return;
-        android.content.ClipboardManager clipboard =
-                (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        if (clipboard != null)
-            clipboard.setPrimaryClip(android.content.ClipData.newPlainText("lyric", text));
     }
 
     /** The line visibly reacts, which is the only feedback a focusless window can give. */
