@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "name": "Jimmeh's Valenced plugins",
+  "description": "LyricRPC: puts the Spotify line you are hearing right now into your Discord custom status.",
+  "plugins": {
+    "jimmeh.lyricrpc": {
+      "name": "LyricRPC",
+      "description": "Puts the Spotify line you are hearing right now into your Discord custom status.",
+      "author": "Jimmeh (https://github.com/JIMMEH-CMYK \"GitHub\")",
+      "channels": {
+        "latest": "1.0.0"
+      },
+      "versions": {
+        "1.0.0": {
+          "url": "https://jimmeh-cmyk.github.io/lyricrpc-mobile/pool/jimmeh.lyricrpc@1.0.0.zip",
+          "sha256": "66f8a7feb2581554801bdea81e4da3b385ec8b50b07982cee6794e79e7f505db",
+          "size": 6993,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        }
+      }
+    }
+  }
+}
