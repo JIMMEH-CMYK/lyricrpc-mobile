@@ -40,6 +40,25 @@ function git(args: string[]): string {
 	return run(published, 'git', ...args)
 }
 
+/** The pool clone is freshly made and has no identity of its own, so commit as the repository owner. */
+function identity(): string[] {
+	const configured = (key: string): string => {
+		try {
+			return run(root, 'git', 'config', '--get', key)
+		} catch {
+			return ''
+		}
+	}
+	const name = configured('user.name')
+	const email = configured('user.email')
+	return [
+		'-c',
+		`user.name=${name || owner}`,
+		'-c',
+		`user.email=${email || `${owner}@users.noreply.github.com`}`,
+	]
+}
+
 const origin = run(root, 'git', 'remote', 'get-url', 'origin')
 	.replace(/^git@github.com:/, 'https://github.com/')
 	.replace(/\.git$/, '')
@@ -59,7 +78,18 @@ if (artifacts.length === 0)
 
 if (existsSync(published)) rmSync(published, { recursive: true, force: true })
 if (run(root, 'git', 'ls-remote', '--heads', origin, branch))
-	run(root, 'git', 'clone', '--quiet', '--depth', '1', '--branch', branch, origin, published)
+	run(
+		root,
+		'git',
+		'clone',
+		'--quiet',
+		'--depth',
+		'1',
+		'--branch',
+		branch,
+		origin,
+		published,
+	)
 else {
 	// No pool branch yet, so the first publish starts one from nothing.
 	mkdirSync(published, { recursive: true })
@@ -94,7 +124,7 @@ else if (dryRun)
 	console.log(`Dry run. Would commit and push:\n${staged}\n${served}`)
 else {
 	const names = artifacts.map(name => basename(name, '.zip'))
-	git(['commit', '--quiet', '-m', `Publish ${names.join(', ')}`])
+	git([...identity(), 'commit', '--quiet', '-m', `Publish ${names.join(', ')}`])
 	git(['push', '--quiet', 'origin', branch])
 	console.log(
 		`Published ${artifacts.length} artifact(s). Repository URL: ${served}`,

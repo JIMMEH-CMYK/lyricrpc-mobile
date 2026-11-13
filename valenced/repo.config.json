@@ -1,5 +1,5 @@
 {
-	"name": "Jimmeh's Valenced plugins",
-	"description": "LyricRPC: puts the Spotify line you are hearing right now into your Discord custom status.",
+	"name": "LyricRPC for Valenced",
+	"description": "The Spotify line you are hearing right now, in your Discord custom status.",
 	"channels": {}
 }
