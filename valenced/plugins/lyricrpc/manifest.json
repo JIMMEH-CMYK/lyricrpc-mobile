@@ -1,0 +1,19 @@
+{
+	"format": 1,
+	"id": "jimmeh.lyricrpc",
+	"name": "LyricRPC",
+	"description": "Puts the Spotify line you are hearing right now into your Discord custom status.",
+	"author": "Jimmeh (https://github.com/JIMMEH-CMYK \"GitHub\")",
+	"version": "1.0.0",
+	"dependencies": {
+		"valenced.api": {
+			"version": ">=1 <2"
+		},
+		"discord": {
+			"version": "*"
+		}
+	},
+	"dist": {
+		"script": "index.js"
+	}
+}

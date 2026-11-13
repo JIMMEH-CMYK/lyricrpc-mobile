@@ -28,8 +28,21 @@ Requires Android 8.0 (API 26) or newer. A debug-signed build is committed as
 
 ## Using it with Discord on mobile
 
-Discord's phone app exposes no status API to other apps, so the handoff stops at the clipboard: this
-app copies the line and, if you want, brings Discord to the front. What you tap after that is yours.
+There are two ways to get the line into Discord, and you can use both.
+
+**Inside a modded Discord, it writes the status itself.** [valenced/](valenced/README.md) is a
+[Valenced](https://github.com/Valenced/valenced) plugin repository — Valenced being the Android
+Discord client mod. The plugin reads the Spotify session your Discord account already holds and
+writes the current line through Discord's own custom-status setter, from inside the client, with no
+token and no clipboard step. Add this URL in Valenced → Settings → Advanced → Repository URL:
+
+```
+https://jimmeh-cmyk.github.io/lyricrpc-mobile/index.json
+```
+
+**In the official Discord app, this app hands the line over.** Discord's phone app exposes no status
+API to other apps, so the handoff stops at the clipboard: this app copies the line and, if you want,
+brings Discord to the front. What you tap after that is yours.
 
 - **Copy** on the notification copies the line and opens Discord in one tap - a tap that came from the
   shade is the only place Android permits that hop.
@@ -71,6 +84,7 @@ src/com/lyricrpc/mobile/        the Android shell: engine, service, notification
 res/                            icons and strings
 AndroidManifest.xml             permissions and components
 build.sh                        a Gradle-free APK build
+valenced/                       the Valenced plugin and the repository that serves it (GPL-3.0)
 ```
 
 `core/` deliberately uses no Android classes, so it can be run and tested on any JVM.
@@ -98,9 +112,10 @@ java -cp outcore com.lyricrpc.mobile.core.CoreTest --offline   # no network
 
 ## Credits and terms
 
-MIT licensed (see `LICENSE`). Lyrics come from the community databases above and remain whatever
-they are licensed as upstream; this project stores nothing and redistributes no lyric file. Not
-affiliated with Spotify, Discord, or the owners of those services.
+MIT licensed (see `LICENSE`), except `valenced/`, which is GPL-3.0 because it is built on the GPL
+Valenced plugin template. Neither part reads the other's code. Lyrics come from the community
+databases above and remain whatever they are licensed as upstream; this project stores nothing and
+redistributes no lyric file. Not affiliated with Spotify, Discord, or the owners of those services.
 
 The notification artwork, the playback bar, the dynamic accent colour and the true-black overlay
 follow ideas from [Kizzey](https://codeberg.org/UnpackedX/Kizzey). No code from it is used: Kizzey
