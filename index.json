@@ -5,16 +5,29 @@
   "plugins": {
     "jimmeh.lyricrpc": {
       "name": "LyricRPC",
-      "description": "Puts the Spotify line you are hearing right now into your Discord custom status.",
+      "description": "Writes the Spotify line you are hearing into Discord's own listening card, or into your custom status.",
       "author": "Jimmeh (https://github.com/JIMMEH-CMYK \"GitHub\")",
       "channels": {
-        "latest": "1.0.0"
+        "latest": "1.1.0"
       },
       "versions": {
         "1.0.0": {
           "url": "https://jimmeh-cmyk.github.io/lyricrpc-mobile/pool/jimmeh.lyricrpc@1.0.0.zip",
           "sha256": "66f8a7feb2581554801bdea81e4da3b385ec8b50b07982cee6794e79e7f505db",
           "size": 6993,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        },
+        "1.1.0": {
+          "url": "https://jimmeh-cmyk.github.io/lyricrpc-mobile/pool/jimmeh.lyricrpc@1.1.0.zip",
+          "sha256": "3e1325d8e418d4e51013ae933f1abe9b4ff27fd61e75069624554803ad37bf71",
+          "size": 8588,
           "dependencies": {
             "valenced.api": {
               "version": ">=1 <2"
